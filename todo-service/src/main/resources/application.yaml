@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: todo-service
+  sql:
+    init:
+      mode: always
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+server:
+    port: 8081
