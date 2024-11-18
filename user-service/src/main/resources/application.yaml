@@ -3,7 +3,7 @@ spring:
     name: user-service
   sql:
     init:
-        mode: always
+      mode: always
   jpa:
     show-sql: true
     properties:
@@ -12,3 +12,10 @@ spring:
     hibernate:
       ddl-auto: create-drop
     defer-datasource-initialization: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/devdb
+    username: devuser
+    password: securepassword
+    driver-class-name: org.postgresql.Driver
+server:
+  port: 9092
