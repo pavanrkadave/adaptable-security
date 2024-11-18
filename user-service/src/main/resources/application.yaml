@@ -13,9 +13,9 @@ spring:
       ddl-auto: create-drop
     defer-datasource-initialization: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/devdb
-    username: devuser
-    password: securepassword
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/devdb}
+    username: ${DATABASE_USER:devuser}
+    password: ${DATABASE_PASSWORD:securepassword}
     driver-class-name: org.postgresql.Driver
 server:
   port: 9092
