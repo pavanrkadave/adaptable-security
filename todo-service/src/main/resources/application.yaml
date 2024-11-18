@@ -18,4 +18,4 @@ spring:
     password: ${DATABASE_PASSWORD:securepassword}
     driver-class-name: org.postgresql.Driver
 server:
-  port: 9091
+  port: ${PORT:9092}
