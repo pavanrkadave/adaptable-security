@@ -7,3 +7,20 @@ services:
       - 'POSTGRES_USER=devuser'
     ports:
       - '5432:5432'
+  config-server:
+    image: 'pavanrkadave/config-server:latest'
+    environment:
+      - 'PORT=8888'
+    ports:
+      - '8888:8888'
+  service-registry:
+    image: 'pavanrkadave/service-registry:latest'
+    environment:
+      - 'PORT=8761'
+      - 'EUREKA_INSTANCE_HOST=service-registry'
+      - 'CONFIG_SERVER_URL=http://config-server:8888'
+    ports:
+      - '8761:8761'
+    depends_on:
+      - 'config-server'
+      - 'postgres'

@@ -12,4 +12,4 @@ spring:
   profiles:
     active: native
 server:
-  port: 9898
+  port: ${PORT:9898}
