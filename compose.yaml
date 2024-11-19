@@ -10,17 +10,74 @@ services:
   config-server:
     image: 'pavanrkadave/config-server:latest'
     environment:
-      - 'PORT=8888'
+      - 'PORT=9898'
     ports:
-      - '8888:8888'
+      - '9898:9898'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9898/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - 'postgres'
   service-registry:
     image: 'pavanrkadave/service-registry:latest'
     environment:
+      - 'CONFIG_SERVER_URL=http://config-server:9898'
       - 'PORT=8761'
-      - 'EUREKA_INSTANCE_HOST=service-registry'
-      - 'CONFIG_SERVER_URL=http://config-server:8888'
     ports:
       - '8761:8761'
     depends_on:
-      - 'config-server'
-      - 'postgres'
+      config-server:
+        condition: service_healthy
+  user-service:
+    image: 'pavanrkadave/user-service:latest'
+    environment:
+      - 'PORT=9091'
+      - 'CONFIG_SERVER_URL=http://config-server:9898'
+      - 'EUREKA_URI=http://service-registry:8761/eureka'
+      - 'DATABASE_URL=jdbc:postgresql://postgres:5432/devdb'
+      - 'DATABASE_USER=devuser'
+      - 'DATABASE_PASSWORD=securepassword'
+    ports:
+      - '9091:9091'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9091/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      config-server:
+        condition: service_healthy
+  todo-service:
+    image: 'pavanrkadave/todo-service:latest'
+    environment:
+      - 'PORT=9092'
+      - 'CONFIG_SERVER_URL=http://config-server:9898'
+      - 'EUREKA_URI=http://service-registry:8761/eureka'
+      - 'DATABASE_URL=jdbc:postgresql://postgres:5432/devdb'
+      - 'DATABASE_USER=devuser'
+      - 'DATABASE_PASSWORD=securepassword'
+    ports:
+      - '9092:9092'
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9092/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      config-server:
+        condition: service_healthy
+  api-gateway:
+    image: 'pavanrkadave/cloud-gateway:latest'
+    environment:
+      - 'PORT=9000'
+      - 'CONFIG_SERVER_URL=http://config-server:9898'
+      - 'EUREKA_URI=http://service-registry:8761/eureka'
+    ports:
+      - '9000:9000'
+    depends_on:
+      user-service:
+        condition: service_healthy
+      todo-service:
+        condition: service_healthy

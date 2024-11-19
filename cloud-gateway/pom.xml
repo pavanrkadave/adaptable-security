@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>xyz.pavanhegde</groupId>
 	<artifactId>cloud-gateway</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>cloud-gateway</name>
 	<description>cloud-gateway</description>
 	<url/>
